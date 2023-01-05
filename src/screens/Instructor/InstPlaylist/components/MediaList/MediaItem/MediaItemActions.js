@@ -2,9 +2,9 @@ import React from 'react';
 import cx from 'classnames';
 import Button from '@material-ui/core/Button';
 import { links } from 'utils';
-import { useButtonStyles, CTText } from 'layout';
+import { useButtonStyles, CTText, CTUploadButton, CTFragment } from 'layout';
 
-function MediaItemActions({ mediaId, media, isUnavailable, dispatch }) {
+function MediaItemActions({ mediaId, media, isUnavailable, dispatch, aslVideoId }) {
   const btn = useButtonStyles();
   const btnClassName = cx(btn.tealLink, 'media-item-button');
 
@@ -21,6 +21,15 @@ function MediaItemActions({ mediaId, media, isUnavailable, dispatch }) {
       return 'epub creation waiting for transcription and scene analysis to complete.';
     if (!media.transReady) return 'epub creation waiting for transcription to complete.';
     if (!media.sceneDetectReady) return 'epub creation waiting for scene analysis to complete.';
+  };
+
+  const baseProps = {
+    accept : "video/mp4,video/x-m4v,video/*",
+  }
+  const props = {
+    icon : 'sign_language',
+    style : btnClassName,
+    ...baseProps,
   };
 
   return (
@@ -52,6 +61,11 @@ function MediaItemActions({ mediaId, media, isUnavailable, dispatch }) {
         >
           I-Note
         </Button>
+
+        <CTUploadButton {...props}
+        >
+          ASL
+        </CTUploadButton>
 
         <Button
           className={btnClassName}

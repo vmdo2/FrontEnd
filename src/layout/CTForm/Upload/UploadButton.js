@@ -23,10 +23,12 @@ function UploadButton(props) {
     text = 'Browse Files',
     children,
     disabled,
+    style,
     ...baseProps
   } = props;
 
-  const classes = useStyles();
+  const temp = useStyles();
+  const classes = style != null ? style : temp;
 
   const startIconElem = <i className="material-icons">{icon}</i>;
   const dropIconElem = <i className="material-icons">cloud_download</i>;
