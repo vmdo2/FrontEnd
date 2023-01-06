@@ -2,7 +2,8 @@ import React from 'react';
 import cx from 'classnames';
 import Button from '@material-ui/core/Button';
 import { links } from 'utils';
-import { useButtonStyles, CTText, CTUploadButton, CTFragment } from 'layout';
+import { useButtonStyles, CTText, CTUploadButton, CTPopoverLabel, CTFragment } from 'layout';
+import IconButton from '@material-ui/core/IconButton';
 
 function MediaItemActions({ mediaId, media, isUnavailable, dispatch, aslVideoId }) {
   const btn = useButtonStyles();
@@ -14,6 +15,9 @@ function MediaItemActions({ mediaId, media, isUnavailable, dispatch, aslVideoId 
       onConfirm: () => dispatch({ type: 'instplaylist/deleteMedias', payload: [mediaId] }),
     };
     dispatch({ type: 'instplaylist/setConfirmation', payload: confirm });
+  };
+
+  const handleASLDelete = () => {
   };
 
   const setEpubErrorText = () => {
@@ -66,11 +70,21 @@ function MediaItemActions({ mediaId, media, isUnavailable, dispatch, aslVideoId 
         >
           ASL
         </CTUploadButton>
+        <CTPopoverLabel label="Delete ASL video">
+              <IconButton 
+                onClick={handleASLDelete}
+                size="small"
+                style={{ color: "red"}}
+              >
+                <i className="material-icons">close</i>
+              </IconButton>
+            </CTPopoverLabel>
 
         <Button
           className={btnClassName}
           startIcon={<i className="material-icons delete">delete</i>}
           onClick={handleDelete}
+          style={{ right: "-10px"}}
         >
           delete
         </Button>
