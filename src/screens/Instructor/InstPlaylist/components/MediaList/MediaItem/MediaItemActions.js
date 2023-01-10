@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import cx from 'classnames';
 import Button from '@material-ui/core/Button';
 import { links } from 'utils';
 import { useButtonStyles, CTText, CTUploadButton, CTPopoverLabel, CTFragment } from 'layout';
 import IconButton from '@material-ui/core/IconButton';
 
-function MediaItemActions({ mediaId, media, isUnavailable, dispatch, aslVideoId }) {
+function MediaItemActions({ mediaId, media, isUnavailable, dispatch }) {
   const btn = useButtonStyles();
   const btnClassName = cx(btn.tealLink, 'media-item-button');
 
@@ -17,9 +17,6 @@ function MediaItemActions({ mediaId, media, isUnavailable, dispatch, aslVideoId 
     dispatch({ type: 'instplaylist/setConfirmation', payload: confirm });
   };
 
-  const handleASLDelete = () => {
-  };
-
   const setEpubErrorText = () => {
     if (!media.transReady && !media.sceneDetectReady)
       return 'epub creation waiting for transcription and scene analysis to complete.';
@@ -27,14 +24,27 @@ function MediaItemActions({ mediaId, media, isUnavailable, dispatch, aslVideoId 
     if (!media.sceneDetectReady) return 'epub creation waiting for scene analysis to complete.';
   };
 
-  const baseProps = {
-    accept : "video/mp4,video/x-m4v,video/*",
+  const [myASL, setMyASL] = useState({
+    status:false
+  });
+
+  const handleASLDelete = () => {
+    if (!myASL.status) {
+      return;
+    }
+    setMyASL({
+      status:false
+    });
   }
-  const props = {
-    icon : 'sign_language',
-    style : btnClassName,
-    ...baseProps,
-  };
+
+  const handleFileASLUpload = () => {
+    if (myASL.status) {
+      return;
+    }
+    setMyASL({
+      status:true
+    });
+  }
 
   return (
     <div>
@@ -66,10 +76,17 @@ function MediaItemActions({ mediaId, media, isUnavailable, dispatch, aslVideoId 
           I-Note
         </Button>
 
-        <CTUploadButton {...props}
+        <CTUploadButton
+          icon='sign_language'
+          style={btnClassName}
+          id="ASL"
+          onFileChange={handleFileASLUpload}
+          accept="video/mp4,video/x-m4v,video/*"
         >
           ASL
         </CTUploadButton>
+        
+        {myASL.status &&
         <CTPopoverLabel label="Delete ASL video">
               <IconButton 
                 onClick={handleASLDelete}
@@ -78,7 +95,7 @@ function MediaItemActions({ mediaId, media, isUnavailable, dispatch, aslVideoId 
               >
                 <i className="material-icons">close</i>
               </IconButton>
-            </CTPopoverLabel>
+        </CTPopoverLabel>}
 
         <Button
           className={btnClassName}
