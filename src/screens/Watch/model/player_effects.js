@@ -122,6 +122,7 @@ export default {
     *media_pause({ payload }, { call, put, select, take }) {
         try {
             PlayerData.video1 && (PlayerData.video1.pause());
+            PlayerData.video1 && (PlayerData.video1.pause());
             PlayerData.video2 && (PlayerData.video2.pause());
         } catch (error) {
             // 

@@ -19,6 +19,7 @@
  
  const videoRef1 = (node) => { PlayerData.video1 = node };
  const videoRef2 = (node) => { PlayerData.video2 = node };
+ const videoRef3 = (node) => { PlayerData.video3 = node };
  const ClassTranscribePlayerNew = (props) => {
    const { dispatch } = props;
    const { transView, muted, volume, playbackrate, openCC } = props;
