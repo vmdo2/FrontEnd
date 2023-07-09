@@ -23,7 +23,7 @@
  const videoRef3 = (node) => { PlayerData.video3 = node };
  const ClassTranscribePlayerNew = (props) => {
    const { dispatch } = props;
-   const { transView, muted, volume, playbackrate, openCC, brightness, contrast } = props;
+   const { transView, muted, volume, playbackrate, openCC, brightness, contrast, rotateColor, invert, scale,magnifyX, magnifyY } = props;
    const { media = {}, mode, isSwitched, isFullscreen, embedded } = props;
    const { videos = [], isTwoScreen } = media;
    const { srcPath1, srcPath2, useHls = false } = videos[0] || {};
@@ -57,7 +57,7 @@
    }, [srcPath1, srcPath2]);
    const player1Position = isSwitched ? SECONDARY : PRIMARY;
    const player2Position = isSwitched ? PRIMARY : SECONDARY;
-   const { videoStyle } = getVideoStyle({brightness, contrast});
+   const { videoStyle } = getVideoStyle({brightness, contrast, rotateColor, invert, scale, magnifyX, magnifyY});
  
    useEffect(() => {
      if (isTwoScreen && !isMobile) {
@@ -72,7 +72,8 @@
      path: srcPath1,
      isSwitched,
      embedded,
-     openCC
+     openCC,
+     videoStyle
    }
    useEffect(() => {
      if(window.hls) {
@@ -82,11 +83,12 @@
    return (
      <>
        <div
+         id='ct-video-con-div'
          className={embedded ? 'ctp ct-video-con' : `ct-video-row ${player1Position}`}
          mode={mode}
          data-trans-view={transView}
          data-fullscreen={isFullscreen}
-         style={videoStyle}
+        //  style={videoStyle}
        >
          {
            useHls ? <VideoHls
@@ -95,15 +97,25 @@
              {...media1Prop}
            />
          }
+         {/* <Video
+             id={1}
+             videoRef={videoRef1}
+             dispatch={dispatch}
+             path={srcPath1}
+             isSwitched={isSwitched}
+             embedded={embedded}
+             style={videoStyle}
+           /> */}
  
        </div>
        {isTwoScreen && (
          <div
+           id='ct-video-con-div'
            className={embedded ? 'ctp ct-video-con' : `ct-video-row ${player2Position}`}
            mode={mode}
            data-trans-view={transView}
            data-fullscreen={isFullscreen}
-           style={videoStyle}
+          //  style={videoStyle}
 
          >
            <Video
@@ -123,7 +135,11 @@
  export const ClassTranscribePlayer = connect(({ watch: {
    media, mode, isSwitched, isFullscreen, embedded
  }, playerpref: {
-   transView, muted, volume, playbackrate, openCC,brightness, contrast
+   transView, muted, volume, playbackrate, openCC,
+   brightness, contrast, rotateColor, invert,
+   scale, magnifyX, magnifyY
  }, loading }) => ({
-   media, mode, isSwitched, isFullscreen, embedded, transView, muted, volume, playbackrate, openCC, brightness, contrast
+   media, mode, isSwitched, isFullscreen, embedded, transView, muted, volume, playbackrate, openCC, 
+   brightness, contrast, rotateColor, invert,
+   scale, magnifyX, magnifyY
  }))(ClassTranscribePlayerNew);

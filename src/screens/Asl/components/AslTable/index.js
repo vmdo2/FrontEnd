@@ -48,13 +48,14 @@ const useSortableData = (items, config = null) => {
 const AslTable = props => {
     const ONE_PAGE_NUM = 50 // one page will have at most 50 glossaries
     const { items, requestSort, sortConfig } = useSortableData(props.words);
-    const [pageNumber, setPageNumber] = useState(1); // the page number is at first 1
+    const [pageNumber, setPageNumber] = useState(1); // the page number starts at 1
     const [jumpNumber, setJumpNumber] = useState(1);
     const [length, setLength] = useState(0); // the length of filtered items is set to 0
     const [search, setSearch] = useState(''); // search text is at first empty
     const [onePage, setOnePage] = useState([]);
     const [showVideo, setShowVideo] = useState(false);
     const [videoUrl, setVideoUrl] = useState('');
+    const [selectedTerm, setSelectedTerm] = useState(null);
     const [style, setStyle] = useState({
         left: 100,
         top: 100,
@@ -71,7 +72,7 @@ const AslTable = props => {
     })
     const [isDown, setIsDown] = useState(false);
     const [direction, setDirection] = useState('');
-
+    
     useEffect(() => {
       const index = (pageNumber-1) * ONE_PAGE_NUM;
       setOnePage(items.filter(item => item.term.toLowerCase().includes(search.toLowerCase())).slice(index, index + ONE_PAGE_NUM));
@@ -117,7 +118,10 @@ const AslTable = props => {
       return 'Example'
     }
 
-    const handleVideo = (source, uniqueASLIdentifier) => {
+    const handleVideo = (term) => {
+      setSelectedTerm(term);
+      const source = term.source;
+      const uniqueASLIdentifier = term.uniqueASLIdentifier;
       const hostName = window.location.hostname;
       if (hostName !== '') {
         if (source === 'ASLCORE') {
@@ -131,16 +135,16 @@ const AslTable = props => {
 
     const handlePrevPage = () => {
       let newPage = Math.ceil(pageNumber-1);
-      if (newPage < 0) {
-        setPageNumber(0);
+      if (newPage < 1) {
+        setPageNumber(1);
       } else {
         setPageNumber(newPage);
       }
     }
 
     const handleNextPage = () => {
-      let newPage = Math.ceil(pageNumber-1);
-      if (newPage*ONE_PAGE_NUM >= length) {
+      let newPage = Math.ceil(pageNumber+1);
+      if ((newPage-1)*ONE_PAGE_NUM >= length) {
         setPageNumber(Math.ceil(length / ONE_PAGE_NUM));
       } else {
         setPageNumber(newPage);
@@ -227,9 +231,10 @@ const AslTable = props => {
               onClick={() => setShowVideo(false)}
             >X
             </button>
-
+            <span>{`${selectedTerm.term} (Source:${selectedTerm.source})`}</span>
             <video 
-              className="video-js vjs-default-skin video-player" 
+              className="video-js vjs-default-skin video-player"
+              id="ASL-Glossary-video-player" 
               controls
               preload="auto"
               data-setup="{}"
@@ -247,7 +252,7 @@ const AslTable = props => {
             onChange={(e) => setSearch(e.target.value)}
           />
           <span className='pageNumber'>Page: {(`${pageNumber}/${Math.ceil(length / ONE_PAGE_NUM)}`)}</span>
-          <button onClick={handlePrevPage} disabled={(pageNumber===1)}>Prev</button>
+          <button onClick={handlePrevPage} disabled={(pageNumber <= 1)}>Prev</button>
           <button onClick={handleNextPage} disabled={(pageNumber*ONE_PAGE_NUM >= length)}>Next</button>
           <input className='pageBox' type='text' onChange={(e) => setJumpNumber(e.target.value)} />
           <button onClick={handleJump}>Go</button>
@@ -319,7 +324,7 @@ const AslTable = props => {
                   <td>
                     <button 
                       type='button' 
-                      onClick={() => handleVideo(term.source, term.uniqueASLIdentifier)}
+                      onClick={() => handleVideo(term)}
                     >
                       Watch
                     </button>
